@@ -5,16 +5,6 @@ import { heroChips, stats, marqueeFeatures } from '../data/mockData';
 export default function Home({ onNavigate }) {
   return (
     <div style={{ position: 'relative' }}>
-      {/* Decorative background blobs */}
-      <div style={{
-        position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: -1, pointerEvents: 'none',
-        background: `
-          radial-gradient(ellipse 600px 400px at 10% 20%, rgba(255,106,61,0.06) 0%, transparent 70%),
-          radial-gradient(ellipse 500px 500px at 90% 10%, rgba(124,58,237,0.05) 0%, transparent 70%),
-          radial-gradient(ellipse 400px 300px at 50% 80%, rgba(34,197,94,0.04) 0%, transparent 70%),
-          radial-gradient(ellipse 600px 400px at 80% 60%, rgba(255,106,61,0.03) 0%, transparent 70%)
-        `,
-      }} />
       <HeroSection onNavigate={onNavigate} />
       <SecondHeadline />
       <BentoGrid />
@@ -36,20 +26,11 @@ function HeroSection({ onNavigate }) {
           Backed by 40+ Student Clubs
         </div>
 
-        {/* Giant Headline */}
         <h1 style={{
           fontSize: 'var(--fs-hero)', fontWeight: 800, lineHeight: 'var(--lh-heading)',
           letterSpacing: '-0.03em', marginBottom: '20px', maxWidth: '800px', margin: '0 auto 20px',
         }}>
-          Borrow dorm gear &<br />join clubs{' '}
-          <span style={{
-            display: 'inline-flex', alignItems: 'center', gap: '8px',
-            background: 'var(--text-primary)', color: '#fff',
-            padding: '4px 24px 8px', borderRadius: 'var(--r-pill)',
-            fontSize: '0.85em', verticalAlign: 'baseline',
-          }}>
-            in minutes
-          </span>
+          Borrow dorm gear &<br />join student clubs
         </h1>
 
         {/* Subtext */}
@@ -62,7 +43,7 @@ function HeroSection({ onNavigate }) {
         </p>
 
         {/* CTA */}
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+        <div className="hero-cta-group" style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
           <button className="btn btn-primary" onClick={() => onNavigate('communities')} style={{ fontSize: '1rem', padding: '0.75rem 2rem' }}>
             Explore Communities <ArrowRight size={16} />
           </button>
@@ -74,8 +55,8 @@ function HeroSection({ onNavigate }) {
 
       {/* Chip Cloud — static, no float animation */}
       <div style={{
-        display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '10px',
-        maxWidth: '700px', margin: '48px auto 0', padding: '0 20px',
+        display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px',
+        maxWidth: '700px', margin: '36px auto 0', padding: '0 16px',
       }}>
         {heroChips.map((chip, i) => (
           <span key={i} className="pill" style={{
@@ -95,7 +76,7 @@ function HeroSection({ onNavigate }) {
 /* ═══ SECOND HEADLINE (hand-drawn circle) ═══ */
 function SecondHeadline() {
   return (
-    <section className="section-pad" style={{ textAlign: 'center', padding: '60px 20px 48px' }}>
+    <section className="section-pad" style={{ textAlign: 'center', padding: '48px 16px 36px' }}>
       <div className="container">
         <h2 className="section-headline" style={{ marginBottom: '16px' }}>
           Students sharing with students.{' '}
@@ -103,7 +84,7 @@ function SecondHeadline() {
             <span style={{ position: 'relative', zIndex: 1 }}>Zero platform cut.</span>
             <svg viewBox="0 0 220 60" style={{
               position: 'absolute', top: '-12px', left: '-12px', width: 'calc(100% + 24px)', height: 'calc(100% + 24px)',
-              zIndex: 0, overflow: 'visible',
+              zIndex: 0, overflow: 'visible', pointerEvents: 'none',
             }}>
               <ellipse cx="110" cy="30" rx="106" ry="26"
                 fill="none" stroke="var(--accent)" strokeWidth="2.5"
@@ -131,7 +112,7 @@ function BentoGrid() {
   const cards = [
     {
       title: 'Direct Chat Negotiation',
-      sub: 'No awkward forms — just message the owner',
+      sub: 'No awkward forms. Just message the owner.',
       mockup: (
         <div style={{ background: '#fff', borderRadius: 'var(--r-nested)', padding: '14px', boxShadow: 'var(--shadow-soft)' }}>
           <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
@@ -193,14 +174,14 @@ function BentoGrid() {
           </div>
           <div>
             <div style={{ fontWeight: 700, fontSize: '0.85rem', color: '#16a34a' }}>Identity Verified</div>
-            <div style={{ fontSize: '0.75rem', color: '#4ade80' }}>aarav@iitb.ac.in — IIT Bombay, Hostel 12</div>
+            <div style={{ fontSize: '0.75rem', color: '#4ade80' }}>aarav@iitb.ac.in, IIT Bombay, Hostel 12</div>
           </div>
         </div>
       ),
     },
     {
       title: '5-Minute Hostel Pickup',
-      sub: 'No delivery needed — grab it from next door',
+      sub: 'No delivery needed. Grab it from next door.',
       mockup: (
         <div style={{ background: '#fff', borderRadius: 'var(--r-nested)', padding: '14px', boxShadow: 'var(--shadow-soft)' }}>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
@@ -228,12 +209,12 @@ function BentoGrid() {
           See what students run on BunkNBorrow
         </h2>
         <p className="section-subtext" style={{ textAlign: 'center', margin: '0 auto 36px' }}>
-          Real features, real interactions — built for campus life.
+          Real features, real interactions, built for campus life.
         </p>
 
         <div style={{
-          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: '20px',
+          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))',
+          gap: '16px',
         }}>
           {cards.map((card, i) => (
             <div key={i} className="card" style={{ padding: '24px' }}>
@@ -292,52 +273,23 @@ function MarqueeStrip() {
 
 /* ═══ STATS COUNTER ═══ */
 function StatsCounter() {
-  const [visible, setVisible] = useState(false);
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
-      { threshold: 0.3 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section ref={ref} className="section-pad" style={{ padding: '48px 20px' }}>
+    <section className="section-pad" style={{ padding: '48px 20px' }}>
       <div className="container" style={{
         display: 'flex', justifyContent: 'center', gap: '48px', flexWrap: 'wrap',
       }}>
         {stats.map((stat, i) => (
-          <AnimatedStat key={i} stat={stat} visible={visible} delay={i * 150} />
+          <StaticStat key={i} stat={stat} />
         ))}
       </div>
     </section>
   );
 }
 
-function AnimatedStat({ stat, visible, delay }) {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    if (!visible) return;
-    const timeout = setTimeout(() => {
-      const duration = 1500;
-      const start = performance.now();
-      const step = (now) => {
-        const progress = Math.min((now - start) / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        setCount(stat.decimals ? +(stat.value * eased).toFixed(stat.decimals) : Math.floor(stat.value * eased));
-        if (progress < 1) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
-    }, delay);
-    return () => clearTimeout(timeout);
-  }, [visible, stat.value, delay, stat.decimals]);
-
+function StaticStat({ stat }) {
   const display = stat.format === 'compact'
-    ? `${stat.prefix || ''}${(count / 100000).toFixed(1)}L${stat.suffix || ''}`
-    : `${stat.prefix || ''}${count.toLocaleString('en-IN')}${stat.suffix || ''}`;
+    ? `${stat.prefix || ''}${(stat.value / 100000).toFixed(1)}L${stat.suffix || ''}`
+    : `${stat.prefix || ''}${stat.value.toLocaleString('en-IN')}${stat.suffix || ''}`;
 
   return (
     <div style={{ textAlign: 'center', minWidth: '120px' }}>

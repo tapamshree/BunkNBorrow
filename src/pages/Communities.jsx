@@ -1,8 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   Home as HomeIcon, Users, Calendar, Compass, Search,
-  Heart, MessageCircle, Share2, ExternalLink, Flag, Hash,
-  Plus, MapPin, Clock, ArrowLeft, Send,
+  Heart, MessageCircle, MessageSquare, Share2, ExternalLink, Flag, Hash,
+  Plus, MapPin, Clock, ArrowLeft, Send, Sparkles, Flame, Users2,
   PanelLeftClose, PanelLeftOpen,
 } from 'lucide-react';
 import { communities, communityPosts, communityEvents, users } from '../data/mockData';
@@ -14,12 +14,23 @@ const platformInfo = {
   telegram: { label: 'Telegram', color: '#0088CC' },
 };
 
-export default function Communities({ onNavigate }) {
+export default function Communities({ onNavigate, initialCommunity, initialView }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [sidebarView, setSidebarView] = useState('home');
-  const [selectedCommunity, setSelectedCommunity] = useState(null);
+  const [selectedCommunity, setSelectedCommunity] = useState(initialCommunity || null);
   const [dashboardTab, setDashboardTab] = useState('feed');
   const [mainSection, setMainSection] = useState('feed'); // feed | explore
+
+  useEffect(() => {
+    if (initialCommunity) {
+      setSelectedCommunity(initialCommunity);
+      setSidebarView('home');
+    } else if (initialView) {
+      if (initialView === 'explore') setMainSection('explore');
+      setSidebarView(initialView);
+      setSelectedCommunity(null);
+    }
+  }, [initialCommunity, initialView]);
 
   const { joinedCommunities } = useSession();
 
@@ -89,13 +100,13 @@ export default function Communities({ onNavigate }) {
         transition: 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
         maxWidth: sidebarOpen ? '680px' : '780px',
       }}>
-        {/* Sidebar toggle (when collapsed) */}
+        {/* Sidebar toggle (when collapsed, desktop only) */}
         {!sidebarOpen && (
-          <button onClick={() => setSidebarOpen(true)} title="Open sidebar" style={{
+          <button onClick={() => setSidebarOpen(true)} title="Open sidebar" className="desktop-only" style={{
             position: 'fixed', left: '12px', top: '50%', transform: 'translateY(-50%)',
             width: '32px', height: '64px', borderRadius: '0 12px 12px 0',
             background: 'var(--surface)', boxShadow: 'var(--shadow-md)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            alignItems: 'center', justifyContent: 'center',
             color: 'var(--text-muted)', cursor: 'pointer', border: 'none',
             zIndex: 50, transition: 'all var(--duration-fast)',
           }}
@@ -114,32 +125,59 @@ export default function Communities({ onNavigate }) {
             onBack={handleBackFromDashboard}
             onNavigate={onNavigate}
           />
-        ) : sidebarView === 'home' ? (
-          /* ── MAIN VIEW: Feed / Explore toggle ── */
+        ) : (
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <div className="page-tabs">
-                <button className={`page-tab ${mainSection === 'feed' ? 'active' : ''}`} onClick={() => setMainSection('feed')}>
-                  🏠 Feed
+            {/* Mobile Community Quick Switcher */}
+            {joinedCommunities.size > 0 && (
+              <div className="mobile-only mobile-community-strip">
+                <button
+                  className={`mobile-community-pill ${sidebarView === 'home' && !selectedCommunity ? 'active' : ''}`}
+                  onClick={() => { setSelectedCommunity(null); setSidebarView('home'); }}
+                >
+                  <Sparkles size={13} />
+                  <span>All Feed</span>
                 </button>
-                <button className={`page-tab ${mainSection === 'explore' ? 'active' : ''}`} onClick={() => setMainSection('explore')}>
-                  🧭 Explore
-                </button>
+                {communities.filter(c => joinedCommunities.has(c.id)).map(c => (
+                  <button
+                    key={c.id}
+                    className="mobile-community-pill"
+                    onClick={() => handleOpenDashboard(c)}
+                  >
+                    <div className="sidebar-community-avatar" style={{ width: 22, height: 22, fontSize: '0.6rem' }}>{c.name.charAt(0)}</div>
+                    <span>{c.name}</span>
+                  </button>
+                ))}
               </div>
-            </div>
-            {mainSection === 'feed' ? (
-              <HomeFeed onOpenDashboard={handleOpenDashboard} onNavigate={onNavigate} />
-            ) : (
-              <ExploreCommunities onOpenDashboard={handleOpenDashboard} />
             )}
+
+            {sidebarView === 'home' ? (
+              <div>
+                {/* MAIN VIEW: Feed / Explore toggle */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                  <div className="page-tabs">
+                    <button className={`page-tab ${mainSection === 'feed' ? 'active' : ''}`} onClick={() => setMainSection('feed')}>
+                      <Flame size={14} style={{ display: 'inline', verticalAlign: '-2px', marginRight: 4 }} /> Feed
+                    </button>
+                    <button className={`page-tab ${mainSection === 'explore' ? 'active' : ''}`} onClick={() => setMainSection('explore')}>
+                      <Compass size={14} style={{ display: 'inline', verticalAlign: '-2px', marginRight: 4 }} /> Explore
+                    </button>
+                  </div>
+                </div>
+                {mainSection === 'feed' ? (
+                  <HomeFeed onOpenDashboard={handleOpenDashboard} onNavigate={onNavigate} />
+                ) : (
+                  <ExploreCommunities onOpenDashboard={handleOpenDashboard} />
+                )}
+              </div>
+            ) : sidebarView === 'my' ? (
+              <MyCommunities onOpenDashboard={handleOpenDashboard} />
+            ) : sidebarView === 'events' ? (
+              <AllEvents />
+            ) : sidebarView === 'explore' ? (
+              <ExploreCommunities onOpenDashboard={handleOpenDashboard} />
+            ) : null}
           </div>
-        ) : sidebarView === 'my' ? (
-          <MyCommunities onOpenDashboard={handleOpenDashboard} />
-        ) : sidebarView === 'events' ? (
-          <AllEvents />
-        ) : sidebarView === 'explore' ? (
-          <ExploreCommunities onOpenDashboard={handleOpenDashboard} />
-        ) : null}
+        )}
       </div>
     </div>
   );
@@ -172,7 +210,7 @@ function HomeFeed({ onOpenDashboard, onNavigate }) {
 
       {feedPosts.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-state-icon">📭</div>
+          <div className="empty-state-icon"><MessageSquare size={36} color="var(--text-muted)" style={{ margin: '0 auto' }} /></div>
           <h3>No posts yet</h3>
           <p>Join some communities to see posts in your feed.</p>
         </div>
@@ -196,7 +234,7 @@ function MyCommunities({ onOpenDashboard }) {
       <h2 style={{ fontSize: 'var(--fs-h3)', fontWeight: 800, marginBottom: '20px' }}>My Communities</h2>
       {myCommunities.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-state-icon">🏠</div>
+          <div className="empty-state-icon"><Users2 size={36} color="var(--text-muted)" style={{ margin: '0 auto' }} /></div>
           <h3>No communities joined</h3>
           <p>Explore and join communities to see them here.</p>
         </div>
@@ -224,7 +262,7 @@ function AllEvents() {
       <h2 style={{ fontSize: 'var(--fs-h3)', fontWeight: 800, marginBottom: '20px' }}>Upcoming Events</h2>
       {events.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-state-icon">📅</div>
+          <div className="empty-state-icon"><Calendar size={36} color="var(--text-muted)" style={{ margin: '0 auto' }} /></div>
           <h3>No upcoming events</h3>
           <p>Events from your joined communities will appear here.</p>
         </div>
@@ -262,7 +300,7 @@ function ExploreCommunities({ onOpenDashboard }) {
 
       {filtered.length === 0 && (
         <div className="empty-state">
-          <div className="empty-state-icon">🔍</div>
+          <div className="empty-state-icon"><Search size={36} color="var(--text-muted)" style={{ margin: '0 auto' }} /></div>
           <h3>No communities found</h3>
           <p>Try a different search term.</p>
         </div>
@@ -381,7 +419,7 @@ function CommunityCard({ community, onOpen }) {
   return (
     <div className="card" style={{ padding: '24px', cursor: 'pointer' }} onClick={() => onOpen(community)}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-        <span className="pill pill-purple"><Hash size={12} /> {community.category}</span>
+        <span className="pill pill-secondary"><Hash size={12} /> {community.category}</span>
         <span className="pill pill-green" style={{ fontSize: '0.65rem' }}>{community.activity}</span>
       </div>
       <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '8px' }}>{community.name}</h3>
@@ -520,7 +558,7 @@ function EventCard({ event }) {
         </div>
         <div style={{ flex: 1 }}>
           <div style={{ marginBottom: '4px' }}>
-            <span className="pill pill-purple" style={{ fontSize: '0.6rem', padding: '3px 10px' }}>{community?.name}</span>
+            <span className="pill pill-secondary" style={{ fontSize: '0.6rem', padding: '3px 10px' }}>{community?.name}</span>
           </div>
           <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '6px' }}>{event.title}</h3>
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--fs-xs)', marginBottom: '10px', lineHeight: 1.6 }}>{event.description}</p>

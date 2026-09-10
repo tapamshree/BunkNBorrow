@@ -1,14 +1,35 @@
-import { useState } from 'react';
-import { Search, MapPin, Star, MessageCircle, Plus, Compass, Package, Clock, History, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { 
+  Search, MapPin, Star, MessageCircle, Plus, Compass, Package, Clock, History, 
+  PanelLeftClose, PanelLeftOpen, Camera, Tent, Cpu, Dumbbell, BookOpen, Headphones, 
+  FlaskConical, Sparkles 
+} from 'lucide-react';
 import { categories, users } from '../data/mockData';
 import { useSession } from '../context/SessionContext';
 
-export default function Marketplace({ onItemClick, onChat, onNavigate }) {
+const categoryIcons = {
+  all: Sparkles,
+  cameras: Camera,
+  camping: Tent,
+  electronics: Cpu,
+  sports: Dumbbell,
+  books: BookOpen,
+  audio: Headphones,
+  lab: FlaskConical,
+};
+
+export default function Marketplace({ onItemClick, onChat, onNavigate, initialView }) {
   const { allListings, currentUser } = useSession();
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [sidebarView, setSidebarView] = useState('explore'); // explore | listings | borrowed | history
+  const [sidebarView, setSidebarView] = useState(initialView || 'explore'); // explore | listings | borrowed | history
+
+  useEffect(() => {
+    if (initialView) {
+      setSidebarView(initialView);
+    }
+  }, [initialView]);
 
   // Filter listings based on sidebar view
   let viewListings = allListings;
@@ -94,13 +115,13 @@ export default function Marketplace({ onItemClick, onChat, onNavigate }) {
         transition: 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
         maxWidth: sidebarOpen ? '900px' : '1000px',
       }}>
-        {/* Sidebar toggle (when collapsed) */}
+        {/* Sidebar toggle (when collapsed, desktop only) */}
         {!sidebarOpen && (
-          <button onClick={() => setSidebarOpen(true)} title="Open sidebar" style={{
+          <button onClick={() => setSidebarOpen(true)} title="Open sidebar" className="desktop-only" style={{
             position: 'fixed', left: '12px', top: '50%', transform: 'translateY(-50%)',
             width: '32px', height: '64px', borderRadius: '0 12px 12px 0',
             background: 'var(--surface)', boxShadow: 'var(--shadow-md)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            alignItems: 'center', justifyContent: 'center',
             color: 'var(--text-muted)', cursor: 'pointer', border: 'none',
             zIndex: 50, transition: 'all var(--duration-fast)',
           }}
@@ -111,10 +132,42 @@ export default function Marketplace({ onItemClick, onChat, onNavigate }) {
           </button>
         )}
 
+        {/* Mobile View Selector Pills */}
+        <div className="mobile-only mobile-scroll-x" style={{ marginBottom: '20px', gap: '8px' }}>
+          <button
+            className={`pill ${sidebarView === 'explore' ? 'pill-orange' : 'pill-muted'}`}
+            onClick={() => setSidebarView('explore')}
+            style={{ padding: '8px 16px', border: 'none', cursor: 'pointer', flexShrink: 0 }}
+          >
+            <Compass size={14} /> Explore All
+          </button>
+          <button
+            className={`pill ${sidebarView === 'listings' ? 'pill-orange' : 'pill-muted'}`}
+            onClick={() => setSidebarView('listings')}
+            style={{ padding: '8px 16px', border: 'none', cursor: 'pointer', flexShrink: 0 }}
+          >
+            <Package size={14} /> My Listings
+          </button>
+          <button
+            className={`pill ${sidebarView === 'borrowed' ? 'pill-orange' : 'pill-muted'}`}
+            onClick={() => setSidebarView('borrowed')}
+            style={{ padding: '8px 16px', border: 'none', cursor: 'pointer', flexShrink: 0 }}
+          >
+            <Clock size={14} /> Borrowed
+          </button>
+          <button
+            className={`pill ${sidebarView === 'history' ? 'pill-orange' : 'pill-muted'}`}
+            onClick={() => setSidebarView('history')}
+            style={{ padding: '8px 16px', border: 'none', cursor: 'pointer', flexShrink: 0 }}
+          >
+            <History size={14} /> History
+          </button>
+        </div>
+
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '28px', flexWrap: 'wrap', gap: '12px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
           <div>
-            <h1 style={{ fontSize: 'var(--fs-h2)', fontWeight: 800, marginBottom: '8px' }}>
+            <h1 style={{ fontSize: 'var(--fs-h2)', fontWeight: 800, marginBottom: '6px' }}>
               {getPageTitle()}
             </h1>
             <p style={{ color: 'var(--text-muted)', fontSize: 'var(--fs-small)' }}>
@@ -127,7 +180,7 @@ export default function Marketplace({ onItemClick, onChat, onNavigate }) {
         </div>
 
         {/* Search */}
-        <div style={{ marginBottom: '24px' }}>
+        <div style={{ marginBottom: '20px' }}>
           <div className="search-bar" style={{ maxWidth: '100%' }}>
             <Search size={16} color="var(--text-muted)" />
             <input placeholder="Search cameras, tents, lab gear..."
@@ -137,22 +190,30 @@ export default function Marketplace({ onItemClick, onChat, onNavigate }) {
 
         {/* Category Pills (only show in Explore view) */}
         {sidebarView === 'explore' && (
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '28px' }}>
-            {categories.map(cat => (
-              <button key={cat.id} className={`pill ${activeCategory === cat.id ? 'pill-orange' : 'pill-muted'}`}
-                onClick={() => setActiveCategory(cat.id)}
-                style={{ cursor: 'pointer', transition: 'all var(--duration-fast)', border: 'none' }}
-              >
-                {cat.label}
-              </button>
-            ))}
+          <div className="mobile-scroll-x" style={{ gap: '8px', marginBottom: '24px', flexWrap: 'nowrap' }}>
+            {categories.map(cat => {
+              const Icon = categoryIcons[cat.id] || Sparkles;
+              return (
+                <button key={cat.id} className={`pill ${activeCategory === cat.id ? 'pill-orange' : 'pill-muted'}`}
+                  onClick={() => setActiveCategory(cat.id)}
+                  style={{ 
+                    cursor: 'pointer', transition: 'all var(--duration-fast)', border: 'none', 
+                    flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: '6px',
+                    padding: '8px 14px',
+                  }}
+                >
+                  <Icon size={14} />
+                  <span>{cat.label}</span>
+                </button>
+              );
+            })}
           </div>
         )}
 
         {/* Grid */}
         <div style={{
-          display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-          gap: '20px',
+          display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))',
+          gap: '16px',
         }}>
           {filtered.map(item => {
             const owner = users.find(u => u.id === item.ownerId);

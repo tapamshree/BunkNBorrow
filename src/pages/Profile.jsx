@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Edit3, MapPin, Star, Package, Users, MessageCircle, Settings, Mail } from 'lucide-react';
+import { Edit3, MapPin, Star, Package, Users, MessageCircle, Settings, Mail, Heart, FileText, Users2 } from 'lucide-react';
 import { useSession } from '../context/SessionContext';
 import { communities } from '../data/mockData';
 
@@ -25,8 +25,8 @@ export default function Profile({ onNavigate }) {
 
       {/* Settings button — top right */}
       <button onClick={() => {}} style={{
-        position: 'absolute', top: '16px', right: '24px',
-        width: '40px', height: '40px', borderRadius: '12px',
+        position: 'absolute', top: '16px', right: '16px',
+        width: '38px', height: '38px', borderRadius: '12px',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         background: 'var(--surface)', boxShadow: 'var(--shadow-soft)',
         color: 'var(--text-muted)', cursor: 'pointer', border: 'none',
@@ -43,7 +43,7 @@ export default function Profile({ onNavigate }) {
         <div className="avatar avatar-xl" style={{ margin: '0 auto 16px' }}>
           {currentUser.initials}
         </div>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '4px' }}>
+        <h1 style={{ fontSize: 'clamp(1.25rem, 4vw, 1.5rem)', fontWeight: 800, marginBottom: '4px' }}>
           {currentUser.name}
         </h1>
         <div style={{
@@ -59,8 +59,8 @@ export default function Profile({ onNavigate }) {
           {currentUser.bio}
         </p>
 
-        {/* Stats Row — no rating/reviews, those go under Rentals */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '32px', marginBottom: '20px' }}>
+        {/* Stats Row */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 'clamp(16px, 6vw, 36px)', marginBottom: '20px' }}>
           <div className="profile-stat">
             <div className="value">{userPosts.length}</div>
             <div className="label">Posts</div>
@@ -122,7 +122,7 @@ export default function Profile({ onNavigate }) {
           {activeTab === 'posts' && (
             <div style={{ maxWidth: '600px', margin: '0 auto', paddingBottom: '60px' }}>
               {userPosts.length === 0 ? (
-                <div className="empty-state"><div className="empty-state-icon">📝</div><h3>No posts yet</h3><p>Your community posts will show up here.</p></div>
+                <div className="empty-state"><div className="empty-state-icon"><FileText size={32} color="var(--text-muted)" style={{ margin: '0 auto' }} /></div><h3>No posts yet</h3><p>Your community posts will show up here.</p></div>
               ) : (
                 userPosts.map(post => {
                   const community = communities.find(c => c.id === post.communityId);
@@ -132,12 +132,13 @@ export default function Profile({ onNavigate }) {
                       boxShadow: 'var(--shadow-soft)', padding: '20px 24px', marginBottom: '12px',
                     }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                        <span className="pill pill-purple" style={{ fontSize: '0.6rem', padding: '3px 10px' }}>{community?.name}</span>
+                        <span className="pill pill-secondary" style={{ fontSize: '0.6rem', padding: '3px 10px' }}>{community?.name}</span>
                         <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>{post.time}</span>
                       </div>
                       <p style={{ fontSize: 'var(--fs-small)', lineHeight: 1.6, whiteSpace: 'pre-line' }}>{post.text}</p>
                       <div style={{ display: 'flex', gap: '16px', marginTop: '10px', fontSize: 'var(--fs-xs)', color: 'var(--text-muted)' }}>
-                        <span>♥ {post.likes}</span><span>💬 {post.commentCount}</span>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><Heart size={12} color="var(--accent)" fill="var(--accent)" /> {post.likes}</span>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><MessageCircle size={12} color="var(--purple)" /> {post.commentCount}</span>
                       </div>
                     </div>
                   );
@@ -175,7 +176,7 @@ export default function Profile({ onNavigate }) {
               </div>
 
               {userListings.length === 0 ? (
-                <div className="empty-state"><div className="empty-state-icon">📦</div><h3>No listings yet</h3><p>Items you list will appear here.</p></div>
+                <div className="empty-state"><div className="empty-state-icon"><Package size={32} color="var(--text-muted)" style={{ margin: '0 auto' }} /></div><h3>No listings yet</h3><p>Items you list will appear here.</p></div>
               ) : (
                 userListings.map(item => (
                   <div key={item.id} style={{
@@ -209,7 +210,7 @@ export default function Profile({ onNavigate }) {
           {activeTab === 'communities' && (
             <div style={{ maxWidth: '600px', margin: '0 auto', paddingBottom: '60px' }}>
               {userCommunities.length === 0 ? (
-                <div className="empty-state"><div className="empty-state-icon">🏠</div><h3>No communities joined</h3><p>Communities you join will appear here.</p></div>
+                <div className="empty-state"><div className="empty-state-icon"><Users2 size={32} color="var(--text-muted)" style={{ margin: '0 auto' }} /></div><h3>No communities joined</h3><p>Communities you join will appear here.</p></div>
               ) : (
                 userCommunities.map(c => (
                   <div key={c.id} style={{

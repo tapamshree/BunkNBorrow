@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import { Bell, User, HelpCircle, ShoppingBag, Users2, Sparkles } from 'lucide-react';
+import { 
+  Bell, User, HelpCircle, ShoppingBag, Users2, Sparkles, 
+  Menu, Heart, MessageSquare, Calendar, UserPlus, Package 
+} from 'lucide-react';
 import { useSession } from '../context/SessionContext';
 
-export default function Navbar({ activePage, onNavigate }) {
+export default function Navbar({ activePage, onNavigate, onToggleDrawer }) {
   const [scrolled, setScrolled] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const { notifs, markAllNotifsRead, currentUser } = useSession();
@@ -31,7 +34,13 @@ export default function Navbar({ activePage, onNavigate }) {
     if (!notifOpen) markAllNotifsRead();
   };
 
-  const notifIcons = { like: '❤️', comment: '💬', event: '📅', join: '👋', listing: '📦' };
+  const notifIcons = { 
+    like: <Heart size={14} color="var(--accent)" fill="var(--accent)" />, 
+    comment: <MessageSquare size={14} color="var(--purple)" />, 
+    event: <Calendar size={14} color="#2563EB" />, 
+    join: <UserPlus size={14} color="var(--success)" />, 
+    listing: <Package size={14} color="var(--accent)" /> 
+  };
 
   return (
     <nav style={{
@@ -46,23 +55,41 @@ export default function Navbar({ activePage, onNavigate }) {
         boxShadow: scrolled ? 'var(--shadow-md)' : 'var(--shadow-soft)',
         padding: '0 8px 0 12px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        height: '60px',
+        height: '56px',
         transition: 'all var(--duration-md) var(--ease-smooth)',
         gap: '8px',
       }}>
 
-        {/* Logo */}
-        <button onClick={() => onNavigate('home')} style={{
-          fontFamily: 'var(--font-logo)', fontSize: '1.4rem', fontWeight: 700,
-          color: 'var(--text-primary)', padding: '0 8px', background: 'none', border: 'none',
-          letterSpacing: '-0.01em', cursor: 'pointer', flexShrink: 0,
-        }}>
-          Bunk<span style={{ color: 'var(--accent)' }}>N</span>Borrow
-        </button>
+        {/* Left container with Hamburger (Mobile only) + Logo */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <button 
+            onClick={onToggleDrawer}
+            className="mobile-only"
+            title="Open side menu"
+            style={{
+              width: '36px', height: '36px', borderRadius: '50%',
+              alignItems: 'center', justifyContent: 'center',
+              background: 'transparent', color: 'var(--text-primary)',
+              border: 'none', cursor: 'pointer', flexShrink: 0,
+              transition: 'all var(--duration-fast)',
+            }}
+          >
+            <Menu size={20} />
+          </button>
 
-        {/* ── Funky Nav Tabs ── */}
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: '6px',
+          {/* Logo */}
+          <button onClick={() => onNavigate('home')} style={{
+            fontFamily: 'var(--font-logo)', fontSize: 'clamp(1.15rem, 4vw, 1.4rem)', fontWeight: 700,
+            color: 'var(--text-primary)', padding: '0 4px', background: 'none', border: 'none',
+            letterSpacing: '-0.01em', cursor: 'pointer', flexShrink: 0,
+          }}>
+            Bunk<span style={{ color: 'var(--accent)' }}>N</span>Borrow
+          </button>
+        </div>
+
+        {/* ── Funky Nav Tabs (Desktop Only) ── */}
+        <div className="desktop-only" style={{
+          alignItems: 'center', gap: '6px',
           background: 'var(--bg-card)', borderRadius: 'var(--r-pill)',
           padding: '4px', flexShrink: 0,
         }}>

@@ -136,13 +136,13 @@ export function ListingCreateModal({ onClose }) {
               <label style={labelStyle}>Category</label>
               <select style={inputStyle} value={form.category}
                 onChange={e => setForm({...form, category: e.target.value})}>
-                <option value="cameras">📷 Cameras</option>
-                <option value="camping">⛺ Camping</option>
-                <option value="electronics">🔌 Electronics</option>
-                <option value="sports">🏸 Sports</option>
-                <option value="books">📚 Books</option>
-                <option value="audio">🎧 Audio</option>
-                <option value="lab">🔬 Lab Gear</option>
+                <option value="cameras">Cameras & Photography</option>
+                <option value="camping">Camping & Outdoors</option>
+                <option value="electronics">Electronics</option>
+                <option value="sports">Sports & Fitness</option>
+                <option value="books">Books & Academic</option>
+                <option value="audio">Audio Gear</option>
+                <option value="lab">Lab & Instruments</option>
               </select>
             </div>
             <div style={{ flex: 1 }}>

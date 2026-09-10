@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import Navbar from './components/Navbar';
+import BottomNav from './components/BottomNav';
+import MobileDrawer from './components/MobileDrawer';
 import Home from './pages/Home';
 import Marketplace from './pages/Marketplace';
 import Communities from './pages/Communities';
@@ -12,9 +14,11 @@ import { Check, Info } from 'lucide-react';
 export default function App() {
   const [page, setPage] = useState('home');
   const [modal, setModal] = useState(null); // { type, data }
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [navParams, setNavParams] = useState({});
   const { toasts } = useSession();
 
-  const navigate = (target) => {
+  const navigate = (target, options = {}) => {
     if (target === 'create') {
       setModal({ type: 'create' });
     } else if (target === 'createPost') {
@@ -25,6 +29,7 @@ export default function App() {
       setModal({ type: 'createEvent', data: target.communityId });
     } else {
       setPage(target);
+      setNavParams(options);
       setModal(null);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -36,12 +41,19 @@ export default function App() {
 
   return (
     <>
-      <Navbar activePage={page} onNavigate={navigate} />
+      <MobileDrawer
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        onNavigate={navigate}
+        activePage={page}
+      />
+
+      <Navbar activePage={page} onNavigate={navigate} onToggleDrawer={() => setDrawerOpen(true)} />
 
       <main style={{ minHeight: '80vh' }}>
         {page === 'home' && <Home onNavigate={navigate} />}
-        {page === 'marketplace' && <Marketplace onItemClick={openItem} onChat={openChat} onNavigate={navigate} />}
-        {page === 'communities' && <Communities onNavigate={navigate} />}
+        {page === 'marketplace' && <Marketplace onItemClick={openItem} onChat={openChat} onNavigate={navigate} initialView={navParams.view} />}
+        {page === 'communities' && <Communities onNavigate={navigate} initialCommunity={navParams.community} initialView={navParams.view} />}
         {page === 'profile' && <Profile onNavigate={navigate} />}
         {page === 'help' && <Help />}
       </main>
@@ -76,6 +88,9 @@ export default function App() {
           ))}
         </div>
       )}
+
+      {/* Mobile Bottom Navigation */}
+      <BottomNav activePage={page} onNavigate={navigate} />
     </>
   );
 }
