@@ -1,16 +1,25 @@
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, ChevronDown, ChevronUp, Check } from 'lucide-react';
-import { heroChips, stats, faqItems, marqueeFeatures } from '../data/mockData';
+import { ArrowRight, Check } from 'lucide-react';
+import { heroChips, stats, marqueeFeatures } from '../data/mockData';
 
 export default function Home({ onNavigate }) {
   return (
-    <div>
+    <div style={{ position: 'relative' }}>
+      {/* Decorative background blobs */}
+      <div style={{
+        position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: -1, pointerEvents: 'none',
+        background: `
+          radial-gradient(ellipse 600px 400px at 10% 20%, rgba(255,106,61,0.06) 0%, transparent 70%),
+          radial-gradient(ellipse 500px 500px at 90% 10%, rgba(124,58,237,0.05) 0%, transparent 70%),
+          radial-gradient(ellipse 400px 300px at 50% 80%, rgba(34,197,94,0.04) 0%, transparent 70%),
+          radial-gradient(ellipse 600px 400px at 80% 60%, rgba(255,106,61,0.03) 0%, transparent 70%)
+        `,
+      }} />
       <HeroSection onNavigate={onNavigate} />
       <SecondHeadline />
       <BentoGrid />
       <MarqueeStrip />
       <StatsCounter />
-      <FaqAccordion />
       <ContrastSection />
       <Footer />
     </div>
@@ -54,11 +63,11 @@ function HeroSection({ onNavigate }) {
 
         {/* CTA */}
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button className="btn btn-primary" onClick={() => onNavigate('marketplace')}>
-            Browse Gear <ArrowRight size={16} />
+          <button className="btn btn-primary" onClick={() => onNavigate('communities')} style={{ fontSize: '1rem', padding: '0.75rem 2rem' }}>
+            Explore Communities <ArrowRight size={16} />
           </button>
-          <button className="btn btn-outline" onClick={() => onNavigate('communities')}>
-            Explore Communities
+          <button className="btn btn-outline" onClick={() => onNavigate('marketplace')}>
+            Browse Gear
           </button>
         </div>
       </div>
@@ -342,49 +351,6 @@ function AnimatedStat({ stat, visible, delay }) {
   );
 }
 
-
-/* ═══ FAQ ACCORDION ═══ */
-function FaqAccordion() {
-  const [openIndex, setOpenIndex] = useState(null);
-
-  return (
-    <section className="section-pad" style={{ padding: '48px 20px' }}>
-      <div className="container" style={{ maxWidth: '700px' }}>
-        <h2 className="section-headline" style={{ textAlign: 'center', marginBottom: '32px' }}>
-          Frequently asked questions
-        </h2>
-        {faqItems.map((item, i) => (
-          <div key={i} style={{ borderBottom: '1px solid #e8e5df' }}>
-            <button onClick={() => setOpenIndex(openIndex === i ? null : i)} style={{
-              width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              padding: '20px 0', fontSize: '1rem', fontWeight: 600,
-              color: 'var(--text-primary)', textAlign: 'left',
-              background: 'none', border: 'none', cursor: 'pointer',
-            }}>
-              {item.q}
-              {openIndex === i
-                ? <ChevronUp size={18} color="var(--accent)" />
-                : <ChevronDown size={18} color="var(--text-muted)" />
-              }
-            </button>
-            <div style={{
-              maxHeight: openIndex === i ? '200px' : '0',
-              overflow: 'hidden',
-              transition: 'max-height var(--duration-slow) var(--ease-smooth)',
-            }}>
-              <p style={{
-                color: 'var(--text-muted)', fontSize: 'var(--fs-small)', lineHeight: 1.7,
-                paddingBottom: '20px',
-              }}>
-                {item.a}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
 
 
 /* ═══ TWO-COLUMN CONTRAST ═══ */

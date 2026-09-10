@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MessageCircle, MapPin, Star, Bookmark, X } from 'lucide-react';
+import { MessageCircle, MapPin, Star, Bookmark, X, Image, Calendar, Clock, Users } from 'lucide-react';
 import { users, communities } from '../data/mockData';
 import { useSession } from '../context/SessionContext';
 
@@ -268,6 +268,143 @@ export function ChatModal({ item, onClose }) {
           />
           <button className="btn btn-primary btn-sm" onClick={send}>Send</button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+
+/* ─── Create Post Modal ─── */
+export function CreatePostModal({ communityId, onClose }) {
+  const { addPost, joinedCommunities } = useSession();
+  const [text, setText] = useState('');
+  const [selectedCommunity, setSelectedCommunity] = useState(communityId || '');
+
+  const joinedList = communities.filter(c => joinedCommunities.has(c.id));
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!text.trim() || !selectedCommunity) return;
+    addPost(selectedCommunity, text);
+    onClose();
+  };
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '520px' }}>
+        <div style={{ padding: '28px 32px 8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h2 style={{ fontSize: 'var(--fs-h3)', fontWeight: 700 }}>Create Post</h2>
+          <button onClick={onClose} style={{
+            background: 'var(--bg-card)', borderRadius: '50%', width: '32px', height: '32px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}><X size={16} /></button>
+        </div>
+        <form onSubmit={handleSubmit} style={{ padding: '16px 32px 32px' }}>
+          {/* Community Selector */}
+          <label style={labelStyle}>Community</label>
+          <select style={inputStyle} value={selectedCommunity} onChange={e => setSelectedCommunity(e.target.value)}>
+            <option value="" disabled>Select a community</option>
+            {joinedList.map(c => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+
+          {/* Post Text */}
+          <label style={labelStyle}>What's on your mind?</label>
+          <textarea
+            style={{ ...inputStyle, height: '140px', resize: 'vertical' }}
+            placeholder="Share an update, ask a question, or start a discussion..."
+            value={text}
+            onChange={e => setText(e.target.value)}
+          />
+
+          {/* Image Placeholder */}
+          <button type="button" style={{
+            display: 'flex', alignItems: 'center', gap: '8px',
+            padding: '10px 16px', borderRadius: 'var(--r-md)',
+            border: '1.5px dashed #d4d0c8', color: 'var(--text-muted)',
+            fontSize: 'var(--fs-xs)', fontWeight: 600, marginTop: '12px',
+            background: 'var(--bg-card)', cursor: 'pointer', width: '100%',
+          }}>
+            <Image size={16} /> Add Image (optional)
+          </button>
+
+          <button className="btn btn-primary" type="submit" style={{ width: '100%', marginTop: '16px', justifyContent: 'center' }}>
+            Publish Post
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+
+/* ─── Create Event Modal ─── */
+export function CreateEventModal({ communityId, onClose }) {
+  const { showToast } = useSession();
+  const [form, setForm] = useState({
+    title: '', description: '', date: '', time: '', location: '', capacity: '',
+  });
+
+  const community = communities.find(c => c.id === communityId);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!form.title || !form.date || !form.time) return;
+    showToast('Event created!', 'success');
+    onClose();
+  };
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '520px' }}>
+        <div style={{ padding: '28px 32px 8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h2 style={{ fontSize: 'var(--fs-h3)', fontWeight: 700 }}>Create Event</h2>
+          <button onClick={onClose} style={{
+            background: 'var(--bg-card)', borderRadius: '50%', width: '32px', height: '32px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}><X size={16} /></button>
+        </div>
+        {community && (
+          <div style={{ padding: '0 32px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span className="pill pill-purple" style={{ fontSize: '0.65rem' }}>{community.name}</span>
+          </div>
+        )}
+        <form onSubmit={handleSubmit} style={{ padding: '16px 32px 32px' }}>
+          <label style={labelStyle}>Event Title</label>
+          <input style={inputStyle} placeholder="e.g. Golden Hour Photo Walk"
+            value={form.title} onChange={e => setForm({...form, title: e.target.value})} />
+
+          <label style={labelStyle}>Description</label>
+          <textarea style={{ ...inputStyle, height: '80px', resize: 'vertical' }}
+            placeholder="What's the event about? Include details like cost, what to bring, etc."
+            value={form.description} onChange={e => setForm({...form, description: e.target.value})} />
+
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <div style={{ flex: 1 }}>
+              <label style={labelStyle}><Calendar size={12} style={{ display: 'inline', verticalAlign: '-1px' }} /> Date</label>
+              <input type="date" style={inputStyle}
+                value={form.date} onChange={e => setForm({...form, date: e.target.value})} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <label style={labelStyle}><Clock size={12} style={{ display: 'inline', verticalAlign: '-1px' }} /> Time</label>
+              <input type="time" style={inputStyle}
+                value={form.time} onChange={e => setForm({...form, time: e.target.value})} />
+            </div>
+          </div>
+
+          <label style={labelStyle}>Location</label>
+          <input style={inputStyle} placeholder="e.g. Tinkering Lab, KReSIT"
+            value={form.location} onChange={e => setForm({...form, location: e.target.value})} />
+
+          <label style={labelStyle}><Users size={12} style={{ display: 'inline', verticalAlign: '-1px' }} /> Max Capacity</label>
+          <input type="number" style={inputStyle} placeholder="e.g. 30"
+            value={form.capacity} onChange={e => setForm({...form, capacity: e.target.value})} />
+
+          <button className="btn btn-primary" type="submit" style={{ width: '100%', marginTop: '16px', justifyContent: 'center' }}>
+            Create Event
+          </button>
+        </form>
       </div>
     </div>
   );

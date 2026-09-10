@@ -1,21 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, Plus, ChevronDown, X } from 'lucide-react';
-
-const searchCategories = [
-  { label: 'Photography', category: 'cameras' },
-  { label: 'Trekking & Camping', category: 'camping' },
-  { label: 'Electronics & Gadgets', category: 'electronics' },
-  { label: 'Sports Equipment', category: 'sports' },
-  { label: 'Books & Stationery', category: 'books' },
-  { label: 'Audio & Music', category: 'audio' },
-  { label: 'Lab Gear', category: 'lab' },
-];
+import { Bell, User, HelpCircle, ShoppingBag, Users2, Sparkles } from 'lucide-react';
+import { useSession } from '../context/SessionContext';
 
 export default function Navbar({ activePage, onNavigate }) {
   const [scrolled, setScrolled] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const searchRef = useRef(null);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const { notifs, markAllNotifsRead, currentUser } = useSession();
+  const notifRef = useRef(null);
+
+  const unreadCount = notifs.filter(n => !n.read).length;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -23,20 +16,22 @@ export default function Navbar({ activePage, onNavigate }) {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Close search dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (searchRef.current && !searchRef.current.contains(e.target)) {
-        setSearchOpen(false);
+      if (notifRef.current && !notifRef.current.contains(e.target)) {
+        setNotifOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const filteredCategories = searchCategories.filter(c =>
-    c.label.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const handleNotifToggle = () => {
+    setNotifOpen(!notifOpen);
+    if (!notifOpen) markAllNotifsRead();
+  };
+
+  const notifIcons = { like: '❤️', comment: '💬', event: '📅', join: '👋', listing: '📦' };
 
   return (
     <nav style={{
@@ -49,7 +44,7 @@ export default function Navbar({ activePage, onNavigate }) {
         backdropFilter: scrolled ? 'blur(16px)' : 'none',
         borderRadius: 'var(--r-pill)',
         boxShadow: scrolled ? 'var(--shadow-md)' : 'var(--shadow-soft)',
-        padding: '0 12px',
+        padding: '0 8px 0 12px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         height: '60px',
         transition: 'all var(--duration-md) var(--ease-smooth)',
@@ -65,109 +60,143 @@ export default function Navbar({ activePage, onNavigate }) {
           Bunk<span style={{ color: 'var(--accent)' }}>N</span>Borrow
         </button>
 
-        {/* Search Bar */}
-        <div ref={searchRef} style={{ position: 'relative', flex: '1 1 320px', maxWidth: '400px' }}>
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: '8px',
-            background: 'var(--bg-card)', border: searchOpen ? '1.5px solid var(--accent)' : '1.5px solid transparent',
-            borderRadius: 'var(--r-pill)', padding: '0 14px', height: '38px',
-            transition: 'border-color var(--duration-fast)',
-          }}>
-            <Search size={15} color="var(--text-muted)" />
-            <input
-              placeholder="Search gear, categories..."
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              onFocus={() => setSearchOpen(true)}
-              style={{
-                border: 'none', outline: 'none', background: 'none', flex: 1,
-                fontSize: 'var(--fs-small)', color: 'var(--text-primary)',
-              }}
-            />
-            {searchQuery && (
-              <button onClick={() => { setSearchQuery(''); }} style={{
-                background: 'none', border: 'none', cursor: 'pointer', padding: '2px',
-                display: 'flex', alignItems: 'center',
-              }}>
-                <X size={14} color="var(--text-muted)" />
-              </button>
-            )}
-          </div>
-
-          {/* Search Dropdown — shows on click/focus */}
-          {searchOpen && (
-            <div style={{
-              position: 'absolute', top: 'calc(100% + 6px)', left: 0, right: 0,
-              background: 'var(--surface)', borderRadius: 'var(--r-nested)',
-              boxShadow: 'var(--shadow-md)', padding: '8px',
-              animation: 'slideDown var(--duration-fast) var(--ease-smooth)',
-              zIndex: 10,
-            }}>
-              <div style={{
-                fontSize: 'var(--fs-xs)', fontWeight: 600, color: 'var(--text-muted)',
-                padding: '6px 10px 8px', textTransform: 'uppercase', letterSpacing: '0.05em',
-              }}>
-                Browse by category
-              </div>
-              {filteredCategories.map((cat, i) => (
-                <button key={i} onClick={() => {
-                  onNavigate('marketplace');
-                  setSearchOpen(false);
-                  setSearchQuery('');
-                }} style={{
-                  display: 'block', width: '100%', textAlign: 'left',
-                  padding: '10px 12px', borderRadius: 'var(--r-md)',
-                  fontSize: 'var(--fs-small)', fontWeight: 500,
-                  background: 'transparent', border: 'none', cursor: 'pointer',
-                  transition: 'background var(--duration-fast)',
-                  color: 'var(--text-primary)',
-                }}
-                onMouseEnter={e => e.currentTarget.style.background = 'var(--lavender)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                >
-                  {cat.label}
-                </button>
-              ))}
-              {filteredCategories.length === 0 && (
-                <div style={{
-                  padding: '12px', fontSize: 'var(--fs-small)', color: 'var(--text-muted)', textAlign: 'center',
-                }}>
-                  No matching categories
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Nav Links */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+        {/* ── Funky Nav Tabs ── */}
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '6px',
+          background: 'var(--bg-card)', borderRadius: 'var(--r-pill)',
+          padding: '4px', flexShrink: 0,
+        }}>
           <button onClick={() => onNavigate('marketplace')} style={{
-            padding: '0.5rem 1rem', borderRadius: 'var(--r-pill)',
-            fontSize: 'var(--fs-small)', fontWeight: 600,
-            color: activePage === 'marketplace' ? 'var(--accent)' : 'var(--text-muted)',
-            background: activePage === 'marketplace' ? 'var(--accent-light)' : 'transparent',
+            display: 'flex', alignItems: 'center', gap: '6px',
+            padding: '8px 18px', borderRadius: 'var(--r-pill)',
+            fontSize: 'var(--fs-xs)', fontWeight: 700, letterSpacing: '0.01em',
+            color: activePage === 'marketplace' ? '#fff' : 'var(--text-muted)',
+            background: activePage === 'marketplace'
+              ? 'linear-gradient(135deg, var(--accent), #E8572A)'
+              : 'transparent',
             border: 'none', cursor: 'pointer',
-            transition: 'all var(--duration-fast)',
+            transition: 'all var(--duration-md) var(--ease-smooth)',
+            boxShadow: activePage === 'marketplace' ? '0 2px 10px rgba(255,106,61,0.3)' : 'none',
+            transform: activePage === 'marketplace' ? 'scale(1.02)' : 'scale(1)',
           }}>
-            Marketplace
+            <ShoppingBag size={14} /> Marketplace
           </button>
           <button onClick={() => onNavigate('communities')} style={{
-            padding: '0.5rem 1rem', borderRadius: 'var(--r-pill)',
-            fontSize: 'var(--fs-small)', fontWeight: 600,
-            color: activePage === 'communities' ? 'var(--accent)' : 'var(--text-muted)',
-            background: activePage === 'communities' ? 'var(--accent-light)' : 'transparent',
+            display: 'flex', alignItems: 'center', gap: '6px',
+            padding: '8px 18px', borderRadius: 'var(--r-pill)',
+            fontSize: 'var(--fs-xs)', fontWeight: 700, letterSpacing: '0.01em',
+            color: activePage === 'communities' ? '#fff' : 'var(--text-muted)',
+            background: activePage === 'communities'
+              ? 'linear-gradient(135deg, var(--purple), #5B21B6)'
+              : 'transparent',
             border: 'none', cursor: 'pointer',
-            transition: 'all var(--duration-fast)',
+            transition: 'all var(--duration-md) var(--ease-smooth)',
+            boxShadow: activePage === 'communities' ? '0 2px 10px rgba(124,58,237,0.3)' : 'none',
+            transform: activePage === 'communities' ? 'scale(1.02)' : 'scale(1)',
           }}>
-            Communities
+            <Users2 size={14} /> Communities
           </button>
         </div>
 
         {/* Right Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-          <button className="btn btn-primary btn-sm" onClick={() => onNavigate('create')}
-            style={{ fontSize: 'var(--fs-xs)' }}>
-            <Plus size={14} /> Post Item
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+          {/* Help */}
+          <button
+            onClick={() => onNavigate('help')}
+            title="Help & FAQ"
+            style={{
+              width: '36px', height: '36px', borderRadius: '50%',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: activePage === 'help' ? 'var(--accent-light)' : 'transparent',
+              color: activePage === 'help' ? 'var(--accent)' : 'var(--text-muted)',
+              transition: 'all var(--duration-fast)', cursor: 'pointer',
+            }}
+          >
+            <HelpCircle size={17} />
+          </button>
+
+          {/* Notifications Bell */}
+          <div ref={notifRef} style={{ position: 'relative' }}>
+            <button
+              onClick={handleNotifToggle}
+              title="Notifications"
+              style={{
+                width: '36px', height: '36px', borderRadius: '50%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: notifOpen ? 'var(--accent-light)' : 'transparent',
+                color: notifOpen ? 'var(--accent)' : 'var(--text-muted)',
+                transition: 'all var(--duration-fast)', cursor: 'pointer',
+                position: 'relative',
+              }}
+            >
+              <Bell size={17} />
+              {unreadCount > 0 && (
+                <span style={{
+                  position: 'absolute', top: '3px', right: '3px',
+                  width: '15px', height: '15px', borderRadius: '50%',
+                  background: 'var(--accent)', color: '#fff',
+                  fontSize: '0.55rem', fontWeight: 700,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: '0 1px 4px rgba(255,106,61,0.4)',
+                  animation: 'pulse 2s infinite',
+                }}>
+                  {unreadCount}
+                </span>
+              )}
+            </button>
+
+            {/* Notification Dropdown */}
+            {notifOpen && (
+              <div className="notification-dropdown">
+                <div style={{
+                  padding: '14px 18px 10px',
+                  fontSize: 'var(--fs-small)', fontWeight: 700,
+                  borderBottom: '1px solid #ece9e3',
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                }}>
+                  <span>Notifications</span>
+                  <span style={{ fontSize: 'var(--fs-xs)', fontWeight: 500, color: 'var(--text-muted)' }}>
+                    {unreadCount} new
+                  </span>
+                </div>
+                {notifs.length === 0 ? (
+                  <div style={{ padding: '24px', textAlign: 'center', color: 'var(--text-muted)', fontSize: 'var(--fs-small)' }}>
+                    No notifications yet
+                  </div>
+                ) : (
+                  notifs.map(n => (
+                    <div key={n.id} className={`notification-item ${!n.read ? 'unread' : ''}`}>
+                      {!n.read && <div className="notification-dot"></div>}
+                      <span style={{ fontSize: '1rem' }}>{notifIcons[n.type] || '🔔'}</span>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: 'var(--fs-xs)', fontWeight: 500, color: 'var(--text-primary)', lineHeight: 1.4 }}>
+                          {n.text}
+                        </div>
+                        <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                          {n.time}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* User Avatar */}
+          <button
+            onClick={() => onNavigate('profile')}
+            title="Profile"
+            style={{
+              cursor: 'pointer', background: 'none',
+              border: activePage === 'profile' ? '2px solid var(--accent)' : '2px solid transparent',
+              borderRadius: '50%', padding: '1px',
+              transition: 'border-color var(--duration-fast)',
+            }}
+          >
+            <div className="avatar" style={{ width: '32px', height: '32px', fontSize: '0.7rem' }}>
+              {currentUser.initials}
+            </div>
           </button>
         </div>
       </div>
