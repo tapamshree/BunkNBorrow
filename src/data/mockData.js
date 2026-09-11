@@ -27,56 +27,56 @@ export const listings = [
     category: 'cameras', type: 'Rent',
     terms: '₹500/day · ₹1,200 deposit · Aadhar ID proof needed · Pickup from Hostel 12 lobby',
     description: 'Barely used Sony mirrorless camera. Perfect for events, club shoots, and semester projects. Comes with 16-50mm kit lens, battery charger, and carry bag.',
-    status: 'available', rating: 4.9,
+    status: 'available', rating: 4.9, image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=400',
   },
   {
     id: 'l2', ownerId: 'u2', title: 'Quechua 3-Person Waterproof Tent',
     category: 'camping', type: 'Rent',
     terms: '₹300/night · Max 5 nights · Clean before return · Hostel 10, Room 204',
     description: 'Decathlon Quechua tent, tested in Lonavala monsoon. Fits 3 people snugly. Includes rain fly and ground sheet.',
-    status: 'available', rating: 4.8,
+    status: 'available', rating: 4.8, image: 'https://images.unsplash.com/photo-1504280387968-077fae6d3092?auto=format&fit=crop&q=80&w=400',
   },
   {
     id: 'l3', ownerId: 'u3', title: 'Arduino Mega 2560 Starter Kit',
     category: 'electronics', type: 'Rent + Sell',
     terms: 'Rent: ₹100/week · Buy: ₹2,800 (MRP ₹4,200) · All sensors included · Hostel 5 gate',
     description: 'Complete Arduino kit with 37 sensor modules, breadboard, jumper wires, LCD display, and tutorial booklet. Perfect for EE/CS course projects.',
-    status: 'available', rating: 4.7,
+    status: 'available', rating: 4.7, image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=400',
   },
   {
     id: 'l4', ownerId: 'u4', title: 'Yonex Astrox 88D Badminton Racket',
     category: 'sports', type: 'Rent',
     terms: '₹150/session · Grip tape fresh · Bring your own shuttles · Sports complex lobby',
     description: 'Tournament-grade Yonex racket, recently restrung at 26lbs. Great for inter-hostel tournament practice.',
-    status: 'rented', rating: 5.0,
+    status: 'rented', rating: 5.0, image: 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&q=80&w=400',
   },
   {
     id: 'l5', ownerId: 'u5', title: 'TI-84 Plus CE Graphing Calculator',
     category: 'electronics', type: 'Rent + Sell',
     terms: 'Rent: ₹50/day · Buy: ₹6,500 · Fresh batteries included · Hostel 3, Wing B',
     description: 'Color screen graphing calculator. Loaded with programs for calculus, stats, and linear algebra. Exam-approved model.',
-    status: 'available', rating: 4.6,
+    status: 'available', rating: 4.6, image: 'https://images.unsplash.com/photo-1574607383476-f517f260d30b?auto=format&fit=crop&q=80&w=400',
   },
   {
     id: 'l6', ownerId: 'u1', title: 'JBL Charge 5 Bluetooth Speaker',
     category: 'audio', type: 'Rent',
     terms: '₹200/day · ₹500 deposit · Fully charged on pickup · Hostel 12 common room',
     description: 'Waterproof JBL speaker with 20hr battery life. Ideal for hostel parties, picnics, and outdoor jams.',
-    status: 'available', rating: 4.9,
+    status: 'available', rating: 4.9, image: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&q=80&w=400',
   },
   {
     id: 'l7', ownerId: 'u2', title: 'Molecular Biology of the Cell — Alberts (7th Ed)',
     category: 'books', type: 'Sell',
     terms: 'Selling at ₹800 (MRP ₹3,200) · Minor highlighting · Hostel 10 mess',
     description: 'Gold standard biology textbook. Clean pages with minimal margin notes. Perfect for biotech and life sciences students.',
-    status: 'available', rating: 4.8,
+    status: 'available', rating: 4.8, image: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&q=80&w=400',
   },
   {
     id: 'l8', ownerId: 'u3', title: 'Philips NeoPix Ultra 2+ Projector',
     category: 'electronics', type: 'Rent',
     terms: '₹400/night · HDMI cable included · 1080p · Return next morning by 10am · Hostel 5 room 312',
     description: 'Full HD projector for movie nights, presentations, and gaming. Bright enough for a dark dorm room. Comes with remote and power cable.',
-    status: 'available', rating: 4.7,
+    status: 'available', rating: 4.7, image: 'https://images.unsplash.com/photo-1588691512401-496660fb7f8a?auto=format&fit=crop&q=80&w=400',
   },
 ];
 
@@ -87,7 +87,7 @@ export const communities = [
     description: 'Student photography club — photo walks, editing workshops, and gear sharing. We shoot everything from street to astrophotography.',
     members: 156, activity: 'High',
     links: { whatsapp: '#', discord: '#', telegram: '#' },
-    relatedCategories: ['cameras'],
+    relatedCategories: ['cameras'], image: 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&q=80&w=400',
   },
   {
     id: 'c2', name: 'Mountain & Trail Trekkers', category: 'Outdoors',
@@ -95,7 +95,7 @@ export const communities = [
     description: 'Weekend treks, monsoon hikes, and camping trips around the Western Ghats. Gear pooling and carpooling organized through the group.',
     members: 98, activity: 'High',
     links: { whatsapp: '#', telegram: '#' },
-    relatedCategories: ['camping', 'sports'],
+    relatedCategories: ['camping', 'sports'], image: 'https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&q=80&w=400',
   },
   {
     id: 'c3', name: 'Open Source & Robotics Guild', category: 'Tech',
@@ -103,7 +103,7 @@ export const communities = [
     description: 'Build robots, contribute to open-source, and share electronics kits. Weekly hack sessions every Saturday at the tinkering lab.',
     members: 74, activity: 'Active',
     links: { discord: '#', telegram: '#' },
-    relatedCategories: ['electronics', 'lab'],
+    relatedCategories: ['electronics', 'lab'], image: 'https://images.unsplash.com/photo-1563206767-5b18f218e8de?auto=format&fit=crop&q=80&w=400',
   },
   {
     id: 'c4', name: 'Campus Esports & LAN', category: 'Gaming',
@@ -111,7 +111,7 @@ export const communities = [
     description: 'Valorant, CS2, and Dota 2 scrims. Monthly LAN parties with projectors and borrowed speakers. All skill levels welcome.',
     members: 243, activity: 'High',
     links: { discord: '#', whatsapp: '#' },
-    relatedCategories: ['electronics', 'audio'],
+    relatedCategories: ['electronics', 'audio'], image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=400',
   },
   {
     id: 'c5', name: 'Indie Board Game Society', category: 'Recreation',
@@ -119,7 +119,7 @@ export const communities = [
     description: 'Catan, Codenames, Azul, and more. We meet every Friday at the student lounge. Bring snacks!',
     members: 42, activity: 'Active',
     links: { whatsapp: '#' },
-    relatedCategories: [],
+    relatedCategories: [], image: 'https://images.unsplash.com/photo-1610890716171-6b1a3d92fbdb?auto=format&fit=crop&q=80&w=400',
   },
   {
     id: 'c6', name: 'Marathon & Running Club', category: 'Fitness',
@@ -127,7 +127,7 @@ export const communities = [
     description: 'Morning runs at 6am, half-marathon training, and inter-college race team. All paces welcome.',
     members: 112, activity: 'High',
     links: { whatsapp: '#', telegram: '#' },
-    relatedCategories: ['sports'],
+    relatedCategories: ['sports'], image: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&q=80&w=400',
   },
 ];
 

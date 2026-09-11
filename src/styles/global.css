@@ -270,7 +270,7 @@ ul, ol { list-style: none; }
   gap: var(--space-sm);
   background: var(--surface);
   border: 1.5px solid #e8e5df;
-  border-radius: var(--r-pill);
+  border-radius: 999px;
   padding: 0.6rem 1.25rem;
   width: 100%;
   max-width: 480px;
@@ -382,7 +382,7 @@ ul, ol { list-style: none; }
 /* ── Community Main Content ── */
 .community-main {
   flex: 1;
-  max-width: 680px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 24px 32px 60px;
 }
@@ -1028,8 +1028,8 @@ ul, ol { list-style: none; }
     padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
   }
 
-  .container {
-    padding: 0 16px;
+  .empty-state {
+    padding: 30px 20px;
   }
 
   .section-pad {
@@ -1354,6 +1354,14 @@ ul, ol { list-style: none; }
   background: var(--bg-page);
   font-size: 0.72rem;
   color: var(--text-muted);
+}
+
+/* ═══════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════ */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 .reddit-drawer-version {

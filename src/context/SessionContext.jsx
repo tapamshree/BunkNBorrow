@@ -16,6 +16,9 @@ export function SessionProvider({ children }) {
   // Liked posts
   const [likedPosts, setLikedPosts] = useState(new Set());
 
+  // Saved posts
+  const [savedPosts, setSavedPosts] = useState(new Set());
+
   // Registered events
   const [registeredEvents, setRegisteredEvents] = useState(new Set());
 
@@ -67,6 +70,20 @@ export function SessionProvider({ children }) {
       return p;
     }));
   }, [likedPosts]);
+
+  const toggleSavePost = useCallback((postId) => {
+    setSavedPosts(prev => {
+      const next = new Set(prev);
+      if (next.has(postId)) {
+        next.delete(postId);
+        showToast('Removed from saved posts', 'info');
+      } else {
+        next.add(postId);
+        showToast('Post saved', 'success');
+      }
+      return next;
+    });
+  }, []);
 
   const addPost = useCallback((communityId, text) => {
     const newPost = {
@@ -132,6 +149,7 @@ export function SessionProvider({ children }) {
       joinedCommunities, toggleJoinCommunity,
       posts, addPost,
       likedPosts, toggleLikePost,
+      savedPosts, toggleSavePost,
       addComment,
       registeredEvents, registerEvent,
       notifs, markAllNotifsRead,

@@ -222,15 +222,21 @@ export default function Marketplace({ onItemClick, onChat, onNavigate, initialVi
                 onClick={() => onItemClick(item)}>
                 {/* Image Area */}
                 <div style={{
-                  background: 'var(--bg-card)', padding: '32px', textAlign: 'center',
+                  background: item.image ? `url(${item.image}) center/cover no-repeat` : 'var(--bg-card)',
+                  minHeight: '180px',
+                  padding: '32px', textAlign: 'center',
                   position: 'relative',
+                  borderRadius: 'calc(var(--r-card) - 2px) calc(var(--r-card) - 2px) 0 0',
                 }}>
-                  <div style={{
-                    fontSize: '1rem', fontWeight: 700, color: 'var(--text-muted)',
-                    textTransform: 'uppercase', letterSpacing: '0.05em',
-                  }}>
-                    {item.category}
-                  </div>
+                  {!item.image && (
+                    <div style={{
+                      fontSize: '1rem', fontWeight: 700, color: 'var(--text-muted)',
+                      textTransform: 'uppercase', letterSpacing: '0.05em',
+                      position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'
+                    }}>
+                      {item.category}
+                    </div>
+                  )}
                   {/* Status Badge */}
                   <span className={`pill ${item.status === 'available' ? 'pill-green' : 'pill-muted'}`}
                     style={{

@@ -1,16 +1,17 @@
 import { useState } from 'react';
-import { Edit3, MapPin, Star, Package, Users, MessageCircle, Settings, Mail, Heart, FileText, Users2 } from 'lucide-react';
+import { Edit3, MapPin, Star, Package, Users, MessageCircle, Settings, Mail, Heart, FileText, Users2, Bookmark } from 'lucide-react';
 import { useSession } from '../context/SessionContext';
 import { communities } from '../data/mockData';
 
 export default function Profile({ onNavigate }) {
-  const { currentUser, allListings, joinedCommunities, posts } = useSession();
+  const { currentUser, allListings, joinedCommunities, posts, savedPosts } = useSession();
   const [activeTab, setActiveTab] = useState('posts');
   const [isEditing, setIsEditing] = useState(false);
 
   const userListings = allListings.filter(l => l.ownerId === currentUser.id);
   const userPosts = posts.filter(p => p.authorId === currentUser.id);
   const userCommunities = communities.filter(c => joinedCommunities.has(c.id));
+  const savedUserPosts = posts.filter(p => savedPosts?.has(p.id));
 
   return (
     <section style={{ position: 'relative' }}>
@@ -75,8 +76,11 @@ export default function Profile({ onNavigate }) {
           </div>
         </div>
 
-        {/* Edit Profile */}
+        {/* Actions */}
         <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+          <button className={`btn btn-sm ${activeTab === 'saved' ? 'btn-primary' : 'btn-outline'}`} onClick={() => setActiveTab('saved')}>
+            <Bookmark size={13} /> Saved
+          </button>
           <button className="btn btn-outline btn-sm" onClick={() => setIsEditing(!isEditing)}>
             <Edit3 size={13} /> {isEditing ? 'Done' : 'Edit Profile'}
           </button>
@@ -138,6 +142,35 @@ export default function Profile({ onNavigate }) {
                       <p style={{ fontSize: 'var(--fs-small)', lineHeight: 1.6, whiteSpace: 'pre-line' }}>{post.text}</p>
                       <div style={{ display: 'flex', gap: '16px', marginTop: '10px', fontSize: 'var(--fs-xs)', color: 'var(--text-muted)' }}>
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><Heart size={12} color="var(--accent)" fill="var(--accent)" /> {post.likes}</span>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><MessageCircle size={12} color="var(--purple)" /> {post.commentCount}</span>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          )}
+
+          {/* Saved Posts Tab */}
+          {activeTab === 'saved' && (
+            <div style={{ maxWidth: '600px', margin: '0 auto', paddingBottom: '60px' }}>
+              {savedUserPosts.length === 0 ? (
+                <div className="empty-state"><div className="empty-state-icon"><Bookmark size={32} color="var(--text-muted)" style={{ margin: '0 auto' }} /></div><h3>No saved posts</h3><p>Posts you save will show up here.</p></div>
+              ) : (
+                savedUserPosts.map(post => {
+                  const community = communities.find(c => c.id === post.communityId);
+                  return (
+                    <div key={post.id} style={{
+                      background: 'var(--surface)', borderRadius: 'var(--r-card)',
+                      boxShadow: 'var(--shadow-soft)', padding: '20px 24px', marginBottom: '12px',
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                        <span className="pill pill-secondary" style={{ fontSize: '0.6rem', padding: '3px 10px' }}>{community?.name}</span>
+                        <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>{post.time}</span>
+                      </div>
+                      <p style={{ fontSize: 'var(--fs-small)', lineHeight: 1.6, whiteSpace: 'pre-line' }}>{post.text}</p>
+                      <div style={{ display: 'flex', gap: '16px', marginTop: '10px', fontSize: 'var(--fs-xs)', color: 'var(--text-muted)' }}>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><Heart size={12} color="var(--accent)" fill={post.likes > 0 ? "var(--accent)" : "none"} /> {post.likes}</span>
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><MessageCircle size={12} color="var(--purple)" /> {post.commentCount}</span>
                       </div>
                     </div>

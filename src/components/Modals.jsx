@@ -64,21 +64,30 @@ export function ItemDetailModal({ item, onClose, onChat }) {
             <span className="pill pill-green" style={{ fontSize: '0.65rem' }}>Verified</span>
           </div>
 
-          {/* Related Community */}
+          {/* Related Communities */}
           {related.length > 0 && (
             <div style={{
-              background: 'var(--purple-light)', borderRadius: 'var(--r-nested)', padding: '14px 16px',
+              background: 'var(--secondary-light)', borderRadius: 'var(--r-nested)', padding: '14px 16px',
               marginBottom: '24px',
             }}>
-              <div style={{ fontSize: 'var(--fs-xs)', fontWeight: 600, color: 'var(--purple)', marginBottom: '6px' }}>
-                Related Community
+              <div style={{ fontSize: 'var(--fs-xs)', fontWeight: 600, color: 'var(--secondary)', marginBottom: '10px' }}>
+                Related Communities
               </div>
-              <div style={{ fontSize: 'var(--fs-small)', fontWeight: 600 }}>
-                {related[0].name}
-              </div>
-              <div style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)' }}>
-                {related[0].members} members · {related[0].activity}
-              </div>
+              {related.map(comm => (
+                <div key={comm.id} style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  background: 'var(--surface)', padding: '10px', borderRadius: 'var(--r-sm)',
+                  marginBottom: '8px'
+                }}>
+                  <div>
+                    <div style={{ fontSize: 'var(--fs-small)', fontWeight: 600 }}>{comm.name}</div>
+                    <div style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)' }}>{comm.members} members · {comm.activity}</div>
+                  </div>
+                  <button className="btn btn-sm btn-outline" style={{ fontSize: '0.65rem', padding: '4px 10px' }}>
+                    Check it out
+                  </button>
+                </div>
+              ))}
             </div>
           )}
 
@@ -164,9 +173,24 @@ export function ListingCreateModal({ onClose }) {
 
           {/* Description */}
           <label style={labelStyle}>Description</label>
-          <textarea style={{...inputStyle, height: '80px', resize: 'vertical'}}
+          <textarea style={{...inputStyle, height: '80px', resize: 'vertical', marginBottom: '16px'}}
             placeholder="Tell people about the item's condition, what's included, etc."
             value={form.description} onChange={e => setForm({...form, description: e.target.value})} />
+
+          {/* Upload Photos */}
+          <label style={labelStyle}>Photos (Optional)</label>
+          <div style={{
+            border: '2px dashed #d1d5db', borderRadius: 'var(--r-md)', padding: '24px',
+            textAlign: 'center', background: 'var(--bg-page)', cursor: 'pointer',
+            marginBottom: '16px', transition: 'border-color var(--duration-fast)',
+          }}
+          onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--accent)'}
+          onMouseLeave={e => e.currentTarget.style.borderColor = '#d1d5db'}
+          >
+            <div style={{ fontSize: '1.2rem', marginBottom: '8px' }}>📸</div>
+            <div style={{ fontSize: 'var(--fs-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>Click to upload photos</div>
+            <div style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)' }}>JPG, PNG up to 5MB</div>
+          </div>
 
           <button className="btn btn-primary" type="submit" style={{ width: '100%', marginTop: '8px', justifyContent: 'center' }}>
             Publish Listing →

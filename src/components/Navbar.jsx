@@ -99,7 +99,7 @@ export default function Navbar({ activePage, onNavigate, onToggleDrawer }) {
             fontSize: 'var(--fs-xs)', fontWeight: 700, letterSpacing: '0.01em',
             color: activePage === 'marketplace' ? '#fff' : 'var(--text-muted)',
             background: activePage === 'marketplace'
-              ? 'linear-gradient(135deg, var(--accent), #E8572A)'
+              ? 'var(--accent)'
               : 'transparent',
             border: 'none', cursor: 'pointer',
             transition: 'all var(--duration-md) var(--ease-smooth)',
@@ -114,7 +114,7 @@ export default function Navbar({ activePage, onNavigate, onToggleDrawer }) {
             fontSize: 'var(--fs-xs)', fontWeight: 700, letterSpacing: '0.01em',
             color: activePage === 'communities' ? '#fff' : 'var(--text-muted)',
             background: activePage === 'communities'
-              ? 'linear-gradient(135deg, var(--purple), #5B21B6)'
+              ? 'var(--secondary)'
               : 'transparent',
             border: 'none', cursor: 'pointer',
             transition: 'all var(--duration-md) var(--ease-smooth)',

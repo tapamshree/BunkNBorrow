@@ -27,19 +27,28 @@ function HeroSection({ onNavigate }) {
         </div>
 
         <h1 style={{
-          fontSize: 'var(--fs-hero)', fontWeight: 800, lineHeight: 'var(--lh-heading)',
-          letterSpacing: '-0.03em', marginBottom: '20px', maxWidth: '800px', margin: '0 auto 20px',
+          fontFamily: 'var(--font-logo)', color: '#334155',
+          fontSize: 'var(--fs-hero)', fontWeight: 700, lineHeight: 'var(--lh-heading)',
+          letterSpacing: '-0.02em', marginBottom: '16px', maxWidth: '1000px', margin: '0 auto 16px',
         }}>
-          Borrow dorm gear &<br />join student clubs
+          Borrow stuff from students & join student communities
         </h1>
+
+        {/* Subheading */}
+        <h2 style={{
+          fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-primary)',
+          marginBottom: '20px', letterSpacing: '-0.01em',
+        }}>
+          Borrow gear. Find your gang.
+        </h2>
 
         {/* Subtext */}
         <p style={{
           color: 'var(--text-muted)', fontSize: '1.15rem', lineHeight: 1.6,
           maxWidth: '540px', margin: '0 auto 32px',
         }}>
-          The peer-to-peer student gear ring. Rent cameras, tents, projectors & lab gear
-          from students in your hostel. Zero platform cut.
+          Rent cameras, tents, projectors & lab gear from students in your hostel,
+          and join communities built around campus life. Zero platform cut.
         </p>
 
         {/* CTA */}
@@ -388,7 +397,7 @@ function Footer() {
           fontSize: 'var(--fs-xs)', color: '#666',
         }}>
           <span>© 2026 BunkNBorrow. All rights reserved.</span>
-          <span>Made for students, by students.</span>
+          <span>By students, for students, from students.</span>
         </div>
       </div>
     </footer>

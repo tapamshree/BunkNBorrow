@@ -3,7 +3,7 @@ import {
   Home as HomeIcon, Users, Calendar, Compass, Search,
   Heart, MessageCircle, MessageSquare, Share2, ExternalLink, Flag, Hash,
   Plus, MapPin, Clock, ArrowLeft, Send, Sparkles, Flame, Users2,
-  PanelLeftClose, PanelLeftOpen,
+  PanelLeftClose, PanelLeftOpen, Bookmark,
 } from 'lucide-react';
 import { communities, communityPosts, communityEvents, users } from '../data/mockData';
 import { useSession } from '../context/SessionContext';
@@ -329,9 +329,14 @@ function CommunityDashboard({ community, tab, onTabChange, onBack, onNavigate })
         <ArrowLeft size={16} /> Back
       </button>
 
-      <div className="community-dashboard-header" style={{ background: 'var(--surface)', borderRadius: 'var(--r-card)' }}>
-        <div className="community-dashboard-avatar">{community.name.charAt(0)}</div>
-        <h2 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '6px' }}>{community.name}</h2>
+      <div className="community-dashboard-header" style={{ background: 'var(--surface)', borderRadius: 'var(--r-card)', overflow: 'hidden' }}>
+        <div style={{
+          height: '140px',
+          background: community.image ? `url(${community.image}) center/cover no-repeat` : 'var(--bg-card)',
+        }}></div>
+        <div style={{ padding: '0 24px 24px', position: 'relative', marginTop: '-32px' }}>
+          <div className="community-dashboard-avatar" style={{ margin: '0 auto 12px', border: '4px solid var(--surface)', width: '64px', height: '64px', borderRadius: '16px', background: 'var(--secondary)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: 800 }}>{community.name.charAt(0)}</div>
+          <h2 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '6px' }}>{community.name}</h2>
         <p style={{ color: 'var(--text-muted)', fontSize: 'var(--fs-small)', marginBottom: '14px', maxWidth: '480px', margin: '0 auto 14px', lineHeight: 1.6 }}>
           {community.bio}
         </p>
@@ -378,6 +383,7 @@ function CommunityDashboard({ community, tab, onTabChange, onBack, onNavigate })
             <Flag size={11} /> Report dead link
           </button>
         )}
+        </div>
       </div>
 
       <div className="page-tabs" style={{ margin: '20px auto', justifyContent: 'center' }}>
@@ -417,11 +423,17 @@ function CommunityCard({ community, onOpen }) {
   const isJoined = joinedCommunities.has(community.id);
 
   return (
-    <div className="card" style={{ padding: '24px', cursor: 'pointer' }} onClick={() => onOpen(community)}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-        <span className="pill pill-secondary"><Hash size={12} /> {community.category}</span>
-        <span className="pill pill-green" style={{ fontSize: '0.65rem' }}>{community.activity}</span>
-      </div>
+    <div className="card" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column' }} onClick={() => onOpen(community)}>
+      <div style={{
+        height: '120px',
+        background: community.image ? `url(${community.image}) center/cover no-repeat` : 'var(--bg-card)',
+        borderRadius: 'calc(var(--r-card) - 2px) calc(var(--r-card) - 2px) 0 0',
+      }}></div>
+      <div style={{ padding: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+          <span className="pill pill-secondary"><Hash size={12} /> {community.category}</span>
+          <span className="pill pill-green" style={{ fontSize: '0.65rem' }}>{community.activity}</span>
+        </div>
       <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '8px' }}>{community.name}</h3>
       <p style={{ color: 'var(--text-muted)', fontSize: 'var(--fs-small)', lineHeight: 1.6, marginBottom: '14px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
         {community.description}
@@ -434,6 +446,7 @@ function CommunityCard({ community, onOpen }) {
           {isJoined ? '✓ Joined' : 'Join'}
         </button>
       </div>
+      </div>
     </div>
   );
 }
@@ -441,7 +454,7 @@ function CommunityCard({ community, onOpen }) {
 
 /* ═══ POST CARD ═══ */
 function PostCard({ post, onOpenDashboard, hideCommunityBadge }) {
-  const { joinedCommunities, toggleJoinCommunity, likedPosts, toggleLikePost, addComment } = useSession();
+  const { joinedCommunities, toggleJoinCommunity, likedPosts, toggleLikePost, savedPosts, toggleSavePost, addComment } = useSession();
   const [showComments, setShowComments] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [shareConfirm, setShareConfirm] = useState(false);
@@ -450,6 +463,7 @@ function PostCard({ post, onOpenDashboard, hideCommunityBadge }) {
   const community = communities.find(c => c.id === post.communityId);
   const isLiked = likedPosts.has(post.id);
   const isJoined = joinedCommunities.has(post.communityId);
+  const isSaved = savedPosts ? savedPosts.has(post.id) : false;
 
   const handleComment = () => {
     if (!commentText.trim()) return;
@@ -491,6 +505,9 @@ function PostCard({ post, onOpenDashboard, hideCommunityBadge }) {
         </button>
         <button className="post-action-btn" onClick={handleShare}>
           <Share2 size={15} /> {shareConfirm ? 'Copied!' : 'Share'}
+        </button>
+        <button className={`post-action-btn ${isSaved ? 'liked' : ''}`} onClick={() => toggleSavePost && toggleSavePost(post.id)} style={{ marginLeft: 'auto' }}>
+          <Bookmark size={15} fill={isSaved ? 'var(--text-muted)' : 'none'} /> {isSaved ? 'Saved' : 'Save'}
         </button>
       </div>
 
