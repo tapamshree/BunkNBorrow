@@ -4,7 +4,18 @@ import { heroChips, stats, marqueeFeatures } from '../data/mockData';
 
 export default function Home({ onNavigate }) {
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', minHeight: '100vh' }}>
+      <div style={{
+        position: 'fixed',
+        top: -20, left: -20, right: -20, bottom: -20,
+        backgroundImage: 'url(/medlar-b.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        opacity: 0.25,
+        filter: 'blur(4px)',
+        zIndex: -1,
+        pointerEvents: 'none'
+      }} />
       <HeroSection onNavigate={onNavigate} />
       <SecondHeadline />
       <BentoGrid />
